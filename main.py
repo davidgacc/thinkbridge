@@ -1,6 +1,9 @@
+import logging
 import asyncio
 import argparse
-from process_csv_companies import get_linkedin_urls
+from process_companies_csv import get_linkedin_urls
+
+logger = logging.getLogger(__name__)
 
 
 def parse_arguments():
@@ -17,10 +20,9 @@ async def main():
 
     try:
         df_companies_url = await get_linkedin_urls(csv_file)
-        print(df_companies_url)
         df_companies_url.to_csv(output_csv_file, index=False)
-        print("LinkedIn URLs and employee counts stored successfully.")
+        logger.info("csv generated successfully")
     except Exception as e:
-        print(f"Error occurred: {str(e)}")
+        logger.error(f"Error occurred: {e}", exc_info=True)
 
 asyncio.run(main())

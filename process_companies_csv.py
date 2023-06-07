@@ -1,8 +1,9 @@
 import asyncio
 import pandas as pd
-import requests
-from bs4 import BeautifulSoup
 from playwright.async_api import async_playwright, Error
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 async def get_linkedin_urls(csv_file):
@@ -23,8 +24,8 @@ async def get_linkedin_urls(csv_file):
                 tasks.append(task)
 
             await asyncio.gather(*tasks)
-        except Error as e:
-            print(f"Error occurred: {str(e)}")
+        except Exception as e:
+            logger.error(f"Error occurred: {e}", exc_info=True)
         finally:
             await context.close()
             await browser.close()
