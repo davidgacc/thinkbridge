@@ -5,10 +5,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+BASE_LINKEDIN_URL = 'https://www.linkedin.com/company'
+
 
 async def get_linkedin_urls(csv_file):
-    data = pd.read_csv(csv_file)
-    df = pd.DataFrame(data, columns=['companies'])
+    data = pd.read_csv(csv_file, sep=',', names=['companies'])
+    df = pd.DataFrame(data)
     df['linkedin_url'] = None  # Add a new column for LinkedIn URLs
 
     async with async_playwright() as p:
@@ -35,7 +37,7 @@ async def get_linkedin_urls(csv_file):
 
 async def fetch_linkedin_url_for_company(page, company_name, index, df):
     try:
-        await page.goto(f"https://www.linkedin.com/company/{company_name}")
+        await page.goto(f"{BASE_LINKEDIN_URL}/{company_name}")
         linkedin_url = page.url
         df.at[index, 'linkedin_url'] = linkedin_url
     except Error as e:
